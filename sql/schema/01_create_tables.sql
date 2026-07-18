@@ -9,16 +9,18 @@ year SMALLINT NOT NULL,
 is_weekend BOOLEAN NOT NULL DEFAULT FALSE);
 
 create table dim_customer(
-customer_name VARCHAR(100) not null primary KEY,
+customer_id   SERIAL PRIMARY KEY,
+customer_name VARCHAR(100) not null ,
 email varchar(150) NOT NULL UNIQUE,
 segment varchar(50),
 signup_date DATE);
 
 create table dim_product (
     product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(150) NOT NULL,
     category varchar(80) not null,
     sub_category varchar(80),
-    unit_cost numeric(10,2) not null check(unit_cost >= 0),
+    unit_cost numeric(10,2) not null check(unit_cost >= 0)
 );
 
 
