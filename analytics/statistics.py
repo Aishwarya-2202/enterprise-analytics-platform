@@ -77,6 +77,42 @@ def full_correlation_matrix(df: pd.DataFrame) -> pd.DataFrame:
     return numeric_cols.corr(method="pearson").round(3)
 
 
+def weekend_vs_weekday_test(df: pd.DataFrame, alpha: float = 0.05) -> None:
+    """
+    Independent-samples t-test (Welch's, not assuming equal variance):
+    is average sale value different on weekends vs weekdays?
+
+    H0 (null): mean total_amount is the same on weekends and weekdays.
+    H1 (alt):  mean total_amount is different between the two groups.
+
+    alpha is decided BEFORE looking at the result -- 0.05 here, a
+    conventional but not universal choice.
+    """
+    weekday_sales = df.loc[df["is_weekend"] == False, "total_amount"]
+    weekend_sales = df.loc[df["is_weekend"] == True, "total_amount"]
+
+    t_stat, p_value = stats.ttest_ind(weekday_sales, weekend_sales, equal_var=False)
+
+    print("\nHypothesis test: weekday vs weekend average sale value")
+    print(f"  H0: no difference in mean sale value")
+    print(f"  H1: mean sale value differs between weekday and weekend")
+    print(f"  Weekday: n={len(weekday_sales)}, mean=${weekday_sales.mean():.2f}")
+    print(f"  Weekend: n={len(weekend_sales)}, mean=${weekend_sales.mean():.2f}")
+    print(f"  t-statistic = {t_stat:.3f}")
+    print(f"  p-value = {p_value:.4f}  (alpha = {alpha})")
+
+    if p_value < alpha:
+        print(f"  -> p < alpha: reject H0. The difference is statistically "
+              f"significant at the {alpha} level.")
+    else:
+        print(f"  -> p >= alpha: fail to reject H0. Not enough evidence "
+              f"of a real difference -- could plausibly be due to chance.")
+
+    print("  Note: 'fail to reject H0' is NOT the same as 'proving H0 true' "
+          "-- it just means this data didn't provide strong enough evidence "
+          "against it.")
+
+
 if __name__ == "__main__":
     engine = get_engine()
     sales = get_sales_detail(engine)
@@ -86,3 +122,5 @@ if __name__ == "__main__":
 
     print("\nFull correlation matrix:")
     print(full_correlation_matrix(sales))
+
+    weekend_vs_weekday_test(sales)
