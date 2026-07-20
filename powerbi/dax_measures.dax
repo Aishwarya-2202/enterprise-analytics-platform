@@ -1,0 +1,73 @@
+-- =====================================================================
+-- File:    dax_measures.dax
+-- Purpose: Core DAX measures for the Power BI model. Each measure is
+--          added individually in Power BI via: Home ribbon -> New
+--          Measure, paste the formula, press Enter.
+--
+-- PREREQUISITE: dim_date must be marked as the model's Date Table
+-- (Model view -> right-click dim_date -> Mark as Date Table -> select
+-- full_date as the unique identifier) before the time-intelligence
+-- measures (Previous Month Revenue, Revenue Growth %) will work.
+-- =====================================================================
+
+
+-- ---------------------------------------------------------------------
+-- Total Revenue
+-- Simple SUM over the fact table's numeric column. This is the base
+-- measure every other measure below builds on.
+-- ---------------------------------------------------------------------
+Total Revenue = SUM(fact_sales[total_amount])
+
+
+-- ---------------------------------------------------------------------
+-- Total COGS (Cost of Goods Sold)
+-- SUMX iterates fact_sales row by row (row context), multiplying each
+-- row's quantity by that row's related product's unit_cost (pulled
+-- across the relationship via RELATED), then sums the per-row results.
+-- Directly mirrors analytics/kpis.py's calculate_profit() SQL logic.
+-- ---------------------------------------------------------------------
+Total COGS = SUMX(
+    fact_sales,
+    fact_sales[quantity] * RELATED(dim_product[unit_cost])
+)
+
+
+-- ---------------------------------------------------------------------
+-- Gross Profit
+-- A measure can reference other measures directly by name in brackets.
+-- ---------------------------------------------------------------------
+Gross Profit = [Total Revenue] - [Total COGS]
+
+
+-- ---------------------------------------------------------------------
+-- Gross Margin %
+-- DIVIDE's third argument (0) is the safe fallback if Total Revenue
+-- is ever zero, avoiding a divide-by-zero error in the visual.
+-- ---------------------------------------------------------------------
+Gross Margin % = DIVIDE([Gross Profit], [Total Revenue], 0)
+
+
+-- ---------------------------------------------------------------------
+-- Previous Month Revenue
+-- CALCULATE re-evaluates [Total Revenue], but overrides the date
+-- filter context to the previous calendar month instead of whatever
+-- month is currently selected/shown. Requires dim_date marked as the
+-- Date Table.
+-- ---------------------------------------------------------------------
+Previous Month Revenue = CALCULATE(
+    [Total Revenue],
+    PREVIOUSMONTH(dim_date[full_date])
+)
+
+
+-- ---------------------------------------------------------------------
+-- Revenue Growth %
+-- Same month-over-month growth concept as Module 5's LAG() query and
+-- Module 6's growth metrics -- now computed dynamically per whatever
+-- month context a visual provides.
+-- ---------------------------------------------------------------------
+Revenue Growth % = DIVIDE(
+    [Total Revenue] - [Previous Month Revenue],
+    [Previous Month Revenue],
+    0
+)
