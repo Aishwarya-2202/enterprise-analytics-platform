@@ -1,0 +1,108 @@
+# Enterprise Business Analytics & Forecasting Platform
+
+A production-style analytics platform built end-to-end: raw data → ETL →
+PostgreSQL star schema → SQL analytics → statistics → machine learning →
+Power BI / Excel → executive reporting. Built as a guided learning project
+covering the full Data Analyst / Analytics Engineer / BI Developer / Junior
+Data Scientist toolkit.
+
+## Tech Stack
+
+Python (pandas, numpy, sqlalchemy, scipy, statsmodels, scikit-learn,
+xgboost) · PostgreSQL · SQL (CTEs, window functions, views) · Power BI
+(DAX) · Excel (Power Query, PivotTables, forecasting functions)
+
+## Architecture
+
+```
+enterprise-analytics-platform/
+├── data/
+│   └── raw/              # source CSVs (Bronze layer)
+├── etl/                  # extract.py, transform.py, load.py, pipeline.py
+├── sql/
+│   ├── schema/           # table + index DDL
+│   ├── analysis/         # ad-hoc analytical queries
+│   └── views/            # permanent reusable business views
+├── analytics/            # kpis.py, business_stats.py
+├── ml/                   # features.py, train.py, classify.py
+├── powerbi/              # SETUP_GUIDE.md, dax_measures.dax
+├── excel/                # sales_workbook.xlsx
+├── reports/               # executive_summary/ (Word reports)
+├── config/               # config.py (centralized, .env-based settings)
+├── .env.example           # committed credential template
+├── requirements.txt
+└── README.md
+```
+
+Data flows in one direction: raw files are read by `etl/`, loaded into
+PostgreSQL's star schema (`fact_sales` + four dimension tables), then
+consumed independently by SQL analytics, Python statistics/ML, and BI
+tools — no downstream consumer writes back upstream.
+
+**Why the star schema, not a fully normalized OLTP schema:** this platform
+is built for analytical reads (OLAP), not high-frequency transactional
+writes — see Module 3 for the full reasoning.
+
+**Why full-refresh, not incremental load:** `etl/pipeline.py` truncates
+and reloads `fact_sales` on every run rather than tracking incrementally
+loaded records. This is the right tradeoff at our current data volume;
+it will not scale to a very large, continuously-growing fact table
+without revisiting this design (see Module 4, Part 6).
+
+## Setup (Windows)
+
+1. Install Python 3.11+, PostgreSQL + pgAdmin, Git, VS Code.
+2. `python -m venv venv` then `venv\Scripts\activate`
+3. `pip install -r requirements.txt`
+4. Create a database named `enterprise_analytics` in pgAdmin.
+5. Run `sql/schema/01_create_tables.sql` then `02_create_indexes.sql` in
+   pgAdmin's Query Tool.
+6. Copy `.env.example` to `.env` and fill in your real PostgreSQL
+   credentials.
+7. Run `python etl/pipeline.py` to load the sample dataset.
+8. Run `python analytics/kpis.py`, `python analytics/business_stats.py`,
+   `python ml/train.py`, and `python ml/classify.py` to reproduce all
+   analysis.
+9. For Power BI / Excel: see `powerbi/SETUP_GUIDE.md` and Module 10.
+
+## Module Map
+
+| Module | What it built |
+|---|---|
+| 1 | Dev environment: Python, VS Code, Git, PostgreSQL, venv |
+| 2 | Project architecture, folder structure, data flow design |
+| 3 | Star schema design, indexes |
+| 4 | ETL pipeline: extract, transform, load, orchestration |
+| 5 | SQL analytics: aggregations, window functions, CTEs, views |
+| 6 | Business KPIs: revenue, profit, CLV, growth metrics |
+| 7 | Statistics: correlation, hypothesis testing, regression, ARIMA |
+| 8 | Machine learning: regression, classification, feature importance |
+| 9 | Power BI: data model, DAX, dashboards, publishing |
+| 10 | Excel: PivotTables, Power Query, forecasting |
+| 11 | Executive reporting, this README |
+
+## Known Limitations & Future Work
+
+Documented honestly, not omitted:
+
+- **No automated test suite.** A `tests/` folder was planned (Module 2)
+  but never implemented. Highest-priority next addition.
+- **Product cost is a placeholder** (60% of price) — see Module 4, Part
+  5 and the executive report's Data Limitations section. Real supplier
+  cost data would make every profit/margin figure trustworthy rather
+  than directional.
+- **Inventory Turnover and Marketing ROI are not implemented** — the
+  required schema extension is designed (Module 6, Part 3) but not
+  built, since no real inventory or marketing spend data source exists.
+- **Only 90 days of history** — seasonality analysis (quarterly/yearly)
+  is not reliable yet; needs 12+ months of accumulated pipeline runs.
+- **`data/processed/` and `data/external/` are unused** — the current
+  pipeline doesn't need an intermediate staging layer or external
+  reference data yet; planned in Module 2, not yet needed in practice.
+- **Fact table loading is full-refresh, not incremental** — revisit if
+  data volume grows enough that reloading everything each run becomes
+  slow (Module 4, Part 6).
+
+## License / Status
+
+Learning project. Not connected to a real production data source.
