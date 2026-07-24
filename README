@@ -1,11 +1,5 @@
 # Enterprise Business Analytics & Forecasting Platform
 
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
-![Power%20BI-Dashboard-yellow)
-![Machine%20Learning-Scikit--Learn-orange)
-![GitHub-License-green)
-
 
 A production-style analytics platform built end-to-end: raw data → ETL →
 PostgreSQL star schema → SQL analytics → statistics → machine learning →
