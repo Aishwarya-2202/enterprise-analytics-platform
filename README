@@ -1,14 +1,30 @@
 # Enterprise Business Analytics & Forecasting Platform
 
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
+![Power%20BI-Dashboard-yellow)
+![Machine%20Learning-Scikit--Learn-orange)
+![GitHub-License-green)
+
+
 A production-style analytics platform built end-to-end: raw data → ETL →
 PostgreSQL star schema → SQL analytics → statistics → machine learning →
 Power BI / Excel → executive reporting. Built as a guided learning project
 covering the full Data Analyst / Analytics Engineer / BI Developer / Junior
 Data Scientist toolkit.
 
-POWER.BI DASHBOARD
+## 📊 Power BI Dashboard
+
+<p align="center">
+  <img src="images/BI DASHBOARD.png" width="1000">
+</p>
 
 
+## EXCEL DASH BOARD 
+
+<p align="center">
+  <img src="images/EXCEL DASHBOARD.png" width="1000">
+</p>
 
 ## Tech Stack
 
@@ -85,5 +101,16 @@ without revisiting this design (see Module 4, Part 6).
 | 10 | Excel: PivotTables, Power Query, forecasting |
 | 11 | Executive reporting, this README |
 
+## 🚀 Features
+
+- End-to-End ETL Pipeline
+- PostgreSQL Star Schema
+- SQL Analytics
+- Business KPI Generation
+- Statistical Analysis
+- Machine Learning Models
+- ARIMA Forecasting
+- Power BI Dashboard
+- Excel Analytics
 
 Learning project. Not connected to a real production data source.
