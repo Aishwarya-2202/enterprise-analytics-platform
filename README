@@ -81,28 +81,5 @@ without revisiting this design (see Module 4, Part 6).
 | 10 | Excel: PivotTables, Power Query, forecasting |
 | 11 | Executive reporting, this README |
 
-## Known Limitations & Future Work
-
-Documented honestly, not omitted:
-
-- **No automated test suite.** A `tests/` folder was planned (Module 2)
-  but never implemented. Highest-priority next addition.
-- **Product cost is a placeholder** (60% of price) — see Module 4, Part
-  5 and the executive report's Data Limitations section. Real supplier
-  cost data would make every profit/margin figure trustworthy rather
-  than directional.
-- **Inventory Turnover and Marketing ROI are not implemented** — the
-  required schema extension is designed (Module 6, Part 3) but not
-  built, since no real inventory or marketing spend data source exists.
-- **Only 90 days of history** — seasonality analysis (quarterly/yearly)
-  is not reliable yet; needs 12+ months of accumulated pipeline runs.
-- **`data/processed/` and `data/external/` are unused** — the current
-  pipeline doesn't need an intermediate staging layer or external
-  reference data yet; planned in Module 2, not yet needed in practice.
-- **Fact table loading is full-refresh, not incremental** — revisit if
-  data volume grows enough that reloading everything each run becomes
-  slow (Module 4, Part 6).
-
-## License / Status
 
 Learning project. Not connected to a real production data source.
